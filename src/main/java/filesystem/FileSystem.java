@@ -168,6 +168,13 @@ public class FileSystem {
             throws IOException {
 
         // TODO: replace this line with your code
+        int numBlocks = numBytes/Disk.BLOCK_SIZE;
+        //Find the number of block needed | This is done by dividing the number of bytes given by the Disk Block Size
+        if (numBlocks>INode.NUM_BLOCK_POINTERS){
+            throw new IOException("File size exceeds maximum size");
+        }
+        //This if statement checks if the number of blocks we calculated can fit into the INode
+
 
         return null;
     }
@@ -180,5 +187,7 @@ public class FileSystem {
     }
 
     // You may add any private method after this comment
-
+    public int[] allocate(int iNodeNumber, int numBytes) throws IOException {
+        return allocateBlocksForFile(iNodeNumber,numBytes);
+    }
 }
