@@ -149,6 +149,10 @@ public class FileSystem {
         INode inode = diskDevice.readInode(fileDescriptor);
         String fileData = "";
         
+    for (int i = 0; i < INode.NUM_BLOCK_POINTERS; i++) {
+        int blockPointer = inode.getBlockPointer(i);
+    }
+        
         return null;
     }
 
