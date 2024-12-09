@@ -147,6 +147,8 @@ public class FileSystem {
      */
     public String read(int fileDescriptor) throws IOException {
         INode inode = diskDevice.readInode(fileDescriptor);
+        String fileData = "";
+        
         return null;
     }
 
