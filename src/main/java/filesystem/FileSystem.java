@@ -153,12 +153,43 @@ public class FileSystem {
 
     /**
      * Add your Javadoc documentation for this method
+     *
+     * @return
      */
-    public void write(int fileDescriptor, String data) throws IOException {
+    public int write(int fileDescriptor, String data) throws IOException {
+        if (fileDescriptor != this.iNodeNumber) {
+            throw new IOException("Filesystem:write: file descriptor," + fileDescriptor +
+                    " does not match file descriptor to open file");
+        }
 
-        // TODO: Replace this line with your code
+        int[] blockNumbers = this.iNodeForFile.getBlockNumbers();
+        if (blockNumbers == null) {
+            int[] newBlockNumbers = allocateBlocksForFile(this.iNodeNumber, data.length());
+            this.iNodeForFile.setBlockNumbers(newBlockNumbers);
+            diskDevice.writeInode(this.iNodeForFile, this.iNodeNumber);
+            blockNumbers = this.iNodeForFile.getBlockNumbers();
+        }
 
+        // now we write the data
+        int currentBlock = 0;
+        int currentByte = 0;
+
+        while (currentByte < data.length()) {
+            // Get a chunk of data for this block
+            byte[] dataBytes = data.substring(currentByte,
+                    Math.min(currentByte + Disk.BLOCK_SIZE, data.length())).getBytes();
+
+            // Write the block
+            diskDevice.writeDataBlock(dataBytes, blockNumbers[currentBlock]);
+
+            // Move to next block
+            currentBlock++;
+            currentByte += Disk.BLOCK_SIZE;
+        }
+
+        return fileDescriptor;
     }
+
 
 
     /**

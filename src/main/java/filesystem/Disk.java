@@ -239,4 +239,6 @@ public class Disk {
      return val;
   }
 
+    public void writeBlock(Object o, int blockNumber) {
+    }
 }

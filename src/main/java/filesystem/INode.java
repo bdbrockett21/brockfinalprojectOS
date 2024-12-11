@@ -17,6 +17,7 @@ public class INode {
     private String fileName;
     private int fileSize;
     private int[] blockPointers;
+    private Object blockNumbers;
 
 
     public INode() {
@@ -165,6 +166,14 @@ public class INode {
                 (byte) (result >> 8),
                 (byte) result
         };
+    }
+
+    public int[] getBlockNumbers() {
+        return new int[0];
+    }
+
+    public void setBlockNumbers(int[] blockNumbers) {
+        this.blockNumbers = blockNumbers;
     }
 }
 
