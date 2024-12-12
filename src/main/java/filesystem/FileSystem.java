@@ -209,12 +209,49 @@ public class FileSystem {
     /**
      * Add your Javadoc documentation for this method
      */
-    private int[] allocateBlocksForFile(int iNodeNumber, int numBytes)
-            throws IOException {
+    private int[] allocateBlocksForFile(int iNodeNumber, int numBytes) throws IOException {
+        // TODO: Replace this line with your code
+        //Calculate required blocks
+        int numBlocksNeeded = (int) Math.ceil(numBytes / Disk.BLOCK_SIZE);
+        if (numBlocksNeeded > INode.NUM_BLOCK_POINTERS) {
+            throw new IOException("File is too big.");
+        }
 
-        // TODO: replace this line with your code
+        //Read the free block list
+        FreeBlockList freeBlockList = new FreeBlockList();
+        freeBlockList.setFreeBlockList(diskDevice.readFreeBlockList());
+        int[] allocatedBlocks = new int[numBlocksNeeded];
+        int foundBlocks = 0;
 
-        return null;
+        //Find and allocate free blocks
+        for (int i = 0; foundBlocks < numBlocksNeeded && i < Disk.NUM_BLOCKS; i++) {
+            int byteIndex = i / 8;
+            int bitIndex = i % 8;
+
+            if ((freeBlockList.getFreeBlockList()[byteIndex] & (1 << bitIndex)) == 0) { // Block is free
+                allocatedBlocks[foundBlocks++] = i;
+                freeBlockList.allocateBlock(i); // Mark block as allocated
+            }
+        }
+
+        //Handle insufficient blocks
+        if (foundBlocks < numBlocksNeeded) {
+            throw new IOException("Not enough free blocks available.");
+        }
+
+        //Write updated free block list
+        diskDevice.writeFreeBlockList(freeBlockList.getFreeBlockList());
+
+        //Update the inode
+        INode inode = diskDevice.readInode(iNodeNumber);
+        for (int i = 0; i < numBlocksNeeded; i++) {
+            inode.setBlockPointer(i, allocatedBlocks[i]);
+        }
+        inode.setSize(numBytes);
+        diskDevice.writeInode(inode, iNodeNumber);
+
+        //Return allocated block numbers
+        return allocatedBlocks;
     }
 
     /**
