@@ -147,8 +147,19 @@ public class FileSystem {
      * Add your Javadoc documentation for this method
      */
     public String read(int fileDescriptor) throws IOException {
-        // TODO: Replace this line with your code
-        return null;
+        INode inode = diskDevice.readInode(fileDescriptor);
+        String fileData = "";
+    
+        for (int i = 0; i < INode.NUM_BLOCK_POINTERS; i++) {
+            int blockPointer = inode.getBlockPointer(i);
+            if (blockPointer >= 0) {
+                byte[] blockData = diskDevice.readDataBlock(blockPointer);
+                String data = new String(blockData).trim();
+                fileData += data;
+            }
+        }
+    
+        return fileData;
     }
 
 
