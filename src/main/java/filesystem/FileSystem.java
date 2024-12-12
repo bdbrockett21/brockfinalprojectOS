@@ -24,16 +24,16 @@ public class FileSystem {
      */
     public int create(String fileName) throws IOException {
         INode tmpINode = null;
-
         boolean isCreated = false;
 
         for (int i = 0; i < Disk.NUM_INODES && !isCreated; i++) {
             tmpINode = diskDevice.readInode(i);
             String name = tmpINode.getFileName();
-            if (name.trim().equals(fileName)) {
-                throw new IOException("FileSystem::create: " + fileName +
-                        " already exists");
-            } else if (tmpINode.getFileName() == null) {
+
+            // Check if the name is null before trimming
+            if (name != null && name.trim().equals(fileName)) {
+                throw new IOException("FileSystem::create: " + fileName + " already exists");
+            } else if (name == null) { // Unused inode found
                 this.iNodeForFile = new INode();
                 this.iNodeForFile.setFileName(fileName);
                 this.iNodeNumber = i;
@@ -41,12 +41,14 @@ public class FileSystem {
                 isCreated = true;
             }
         }
+
         if (!isCreated) {
             throw new IOException("FileSystem::create: Unable to create file");
         }
 
         return fileDescriptor;
     }
+
 
     /**
      * Removes the file
