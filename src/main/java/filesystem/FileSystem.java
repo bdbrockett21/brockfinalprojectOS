@@ -30,8 +30,8 @@ public class FileSystem {
         for (int i = 0; i < Disk.NUM_INODES && !isCreated; i++) {
             tmpINode = diskDevice.readInode(i);
             String name = tmpINode.getFileName();
-            if (name.trim().equals(fileName)){
-                throw new IOException("FileSystem::create: "+fileName+
+            if (name.trim().equals(fileName)) {
+                throw new IOException("FileSystem::create: " + fileName +
                         " already exists");
             } else if (tmpINode.getFileName() == null) {
                 this.iNodeForFile = new INode();
@@ -131,8 +131,8 @@ public class FileSystem {
      * @throws IOException If disk is not accessible for writing
      */
     public void close(int fileDescriptor) throws IOException {
-        if (fileDescriptor != this.iNodeNumber){
-            throw new IOException("FileSystem::close: file descriptor, "+
+        if (fileDescriptor != this.iNodeNumber) {
+            throw new IOException("FileSystem::close: file descriptor, " +
                     fileDescriptor + " does not match file descriptor " +
                     "of open file");
         }
@@ -223,10 +223,10 @@ public class FileSystem {
      * deallocates each block then it severs the connection
      * between the Inode and the block. Then it writes the
      * updated information to the disk.
+     * Wayleom Did This
      */
-    private void deallocateBlocksForFile(int iNodeNumber) {
+    private void deallocateBlocksForFile(int iNodeNumber) throws IOException {
         INode inode = diskDevice.readInode(iNodeNumber);
-    }
 
         freeBlockList.setFreeBlockList(diskDevice.readFreeBlockList());
 
@@ -242,3 +242,4 @@ public class FileSystem {
         inode.setSize(-1);
         diskDevice.writeInode(inode, iNodeNumber);
     }
+}
