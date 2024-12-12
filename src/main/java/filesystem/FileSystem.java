@@ -5,7 +5,8 @@ import java.io.IOException;
 
 public class FileSystem {
     private Disk diskDevice;
-
+    // gives you a list of all the free blocks for allocation
+    private FreeBlockList freeBlockList;
     private int iNodeNumber;
     private int fileDescriptor;
     private INode iNodeForFile;
@@ -206,10 +207,27 @@ public class FileSystem {
     /**
      * Add your Javadoc documentation for this method
      */
+    /*
+     * Loops through all the blocks connected to the Inode
+     * deallocates each block then it severs the connection
+     * between the Inode and the block. Then it writes the
+     * updated information to the disk.
+     */
     private void deallocateBlocksForFile(int iNodeNumber) {
-        // TODO: replace this line with your code
+        INode inode = diskDevice.readInode(iNodeNumber);
     }
 
-    // You may add any private method after this comment
+        freeBlockList.setFreeBlockList(diskDevice.readFreeBlockList());
 
-}
+        for (int i = 0; i < INode.NUM_BLOCK_POINTERS; i++) {
+            int blockNumber = inode.getBlockPointer(i);
+            if (blockNumber == -1) break;
+
+            freeBlockList.deallocateBlock(blockNumber);
+            inode.setBlockPointer(i, -1);
+        }
+
+        diskDevice.writeFreeBlockList(freeBlockList.getFreeBlockList());
+        inode.setSize(-1);
+        diskDevice.writeInode(inode, iNodeNumber);
+    }
