@@ -155,22 +155,22 @@ public class FileSystem {
     /**
      * Add your Javadoc documentation for this method
      */
-    public void write(int fileDescriptor, String data) throws IOException {
-
-        // TODO: Replace this line with your code
-
-    }
-
-
-    /**
-     * Add your Javadoc documentation for this method
-     */
+    public void write(int fileD
     private int[] allocateBlocksForFile(int iNodeNumber, int numBytes) throws IOException {
         // TODO: Replace this line with your code
         //Calculate required blocks
         int numBlocksNeeded = (int) Math.ceil(numBytes / Disk.BLOCK_SIZE);
         if (numBlocksNeeded > INode.NUM_BLOCK_POINTERS) {
-            throw new IOException("File is too big.");
+            throw new IOException("Fiescriptor, String data) throws IOException {\n" +
+                    "\n" +
+                    "        // TODO: Replace this line with your code\n" +
+                    "\n" +
+                    "    }\n" +
+                    "\n" +
+                    "\n" +
+                    "    /**\n" +
+                    "     * Add your Javadoc documentation for this method\n" +
+                    "     */le is too big.");
         }
 
         //Read the free block list
