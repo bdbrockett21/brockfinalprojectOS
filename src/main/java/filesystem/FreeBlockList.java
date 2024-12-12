@@ -42,7 +42,7 @@ public class FreeBlockList {
 
         /**
          * Extract the correct byte in which the block falls
-         *
+         *x
          * Blocks are arranged from 0..max_block
          *
          * Each block has a bit that tells whether or not the block
