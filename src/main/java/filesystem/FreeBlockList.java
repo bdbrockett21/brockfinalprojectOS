@@ -73,4 +73,8 @@ public class FreeBlockList {
          */
         freeList[blockNum] = (byte) (freeList[blockNum] & (~(1 << offset)));
     }
+
+    public boolean isBlockAllocated(int i) {
+        return false;
+    }
 }
